@@ -1,0 +1,48 @@
+buildscript {
+    ext {
+        // Ensure kotlin_version is defined if your project uses Kotlin
+        // If you don't have this, it might be defined elsewhere or not needed for your setup
+        kotlin_version = '1.9.0' // Make sure this matches your project's Kotlin version
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        // Your Android Gradle Plugin version
+        classpath 'com.android.tools.build:gradle:8.2.1'
+
+        // If your project uses Kotlin, this classpath is needed
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // THIS IS THE CRUCIAL LINE FOR THE PROJECT-LEVEL build.gradle:
+        // It declares where to find the google-services plugin
+        classpath 'com.google.gms:google-services:4.4.1' // Use the latest version you need
+    }
+}
+
+// REMOVE THE FOLLOWING BLOCK FROM HERE:
+// plugins {
+//     id "com.google.gms.google-services"
+// }
+// This block belongs in android/app/build.gradle, not here.
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
